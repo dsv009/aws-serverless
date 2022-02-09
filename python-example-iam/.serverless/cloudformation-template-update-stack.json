@@ -71,16 +71,16 @@
         }
       }
     },
-    "HelloDashshortDashtimeoutLogGroup": {
+    "HelloUnderscoresravanLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/hello-world-python-dev-hello-short-timeout"
+        "LogGroupName": "/aws/lambda/python-example-iam-dev-hello_sravan"
       }
     },
-    "HelloDashlongDashtimeoutLogGroup": {
+    "HelloUnderscorerajammaLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/hello-world-python-dev-hello-long-timeout"
+        "LogGroupName": "/aws/lambda/python-example-iam-dev-hello_rajamma"
       }
     },
     "IamRoleLambdaExecution": {
@@ -108,7 +108,7 @@
               "Fn::Join": [
                 "-",
                 [
-                  "hello-world-python",
+                  "python-example-iam",
                   "dev",
                   "lambda"
                 ]
@@ -125,7 +125,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/hello-world-python-dev*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/python-example-iam-dev*:*"
                     }
                   ]
                 },
@@ -136,8 +136,17 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/hello-world-python-dev*:*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/python-example-iam-dev*:*:*"
                     }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:*"
+                  ],
+                  "Resource": [
+                    "*"
                   ]
                 }
               ]
@@ -145,19 +154,21 @@
           }
         ],
         "Path": "/",
-        "RoleName": {
-          "Fn::Join": [
-            "-",
-            [
-              "hello-world-python",
-              "dev",
-              {
-                "Ref": "AWS::Region"
-              },
-              "lambdaRole"
+        "RoleName": "Serverless-iam-role",
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+              ]
             ]
-          ]
-        }
+          }
+        ]
       }
     },
     "EnterpriseLogAccessIamRole": {
@@ -194,13 +205,13 @@
                   "Resource": [
                     {
                       "Fn::GetAtt": [
-                        "HelloDashshortDashtimeoutLogGroup",
+                        "HelloUnderscoresravanLogGroup",
                         "Arn"
                       ]
                     },
                     {
                       "Fn::GetAtt": [
-                        "HelloDashlongDashtimeoutLogGroup",
+                        "HelloUnderscorerajammaLogGroup",
                         "Arn"
                       ]
                     }
@@ -212,93 +223,119 @@
         ]
       }
     },
-    "HelloDashshortDashtimeoutLambdaFunction": {
+    "HelloUnderscoresravanLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/hello-world-python/dev/1644365187288-2022-02-09T00:06:27.288Z/hello-world-python.zip"
+          "S3Key": "serverless/python-example-iam/dev/1644373392576-2022-02-09T02:23:12.576Z/python-example-iam.zip"
         },
-        "Handler": "s_hello_short_timeout.handler",
+        "Handler": "s_hello_sravan.handler",
         "Runtime": "python3.9",
-        "FunctionName": "hello-world-python-dev-hello-short-timeout",
-        "MemorySize": 512,
-        "Timeout": 2,
-        "Role": {
-          "Fn::GetAtt": [
-            "IamRoleLambdaExecution",
-            "Arn"
-          ]
-        }
-      },
-      "DependsOn": [
-        "HelloDashshortDashtimeoutLogGroup"
-      ]
-    },
-    "HelloDashlongDashtimeoutLambdaFunction": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Ref": "ServerlessDeploymentBucket"
-          },
-          "S3Key": "serverless/hello-world-python/dev/1644365187288-2022-02-09T00:06:27.288Z/hello-world-python.zip"
-        },
-        "Handler": "s_hello_long_timeout.handler",
-        "Runtime": "python3.9",
-        "FunctionName": "hello-world-python-dev-hello-long-timeout",
-        "MemorySize": 256,
+        "FunctionName": "python-example-iam-dev-hello_sravan",
+        "MemorySize": 1024,
         "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "first_name": "sravan"
+          }
+        },
         "Role": {
           "Fn::GetAtt": [
             "IamRoleLambdaExecution",
             "Arn"
           ]
+        },
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0849f6f878028de70"
+          ],
+          "SubnetIds": [
+            "subnet-0003c750da2b65c1e"
+          ]
         }
       },
       "DependsOn": [
-        "HelloDashlongDashtimeoutLogGroup"
+        "HelloUnderscoresravanLogGroup"
       ]
     },
-    "HelloDashshortDashtimeoutLambdaVersionyxSEcLpf0Q88EglsFsQWQYZnvJ0IV1AkNRUSfixQKA": {
+    "HelloUnderscorerajammaLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/python-example-iam/dev/1644373392576-2022-02-09T02:23:12.576Z/python-example-iam.zip"
+        },
+        "Handler": "s_hello_rajamma.handler",
+        "Runtime": "python3.9",
+        "FunctionName": "python-example-iam-dev-hello_rajamma",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "first_name": "rajamma"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-0849f6f878028de70"
+          ],
+          "SubnetIds": [
+            "subnet-0003c750da2b65c1e"
+          ]
+        }
+      },
+      "DependsOn": [
+        "HelloUnderscorerajammaLogGroup"
+      ]
+    },
+    "HelloUnderscoresravanLambdaVersioneQKQZPzCpo367B368x0aPmPhS9P5scDaPX0Wxrm6HU": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
-          "Ref": "HelloDashshortDashtimeoutLambdaFunction"
+          "Ref": "HelloUnderscoresravanLambdaFunction"
         },
-        "CodeSha256": "4oByfhhi96kdg2YcVuOVnxDjFnYqXQnaplHDHagzOt4="
+        "CodeSha256": "ZknKFQ6EsuY8f5LCPqqTfKynN/EUi4OB/ZXHLkMeGMg="
       }
     },
-    "HelloDashlongDashtimeoutLambdaVersionUDnDtKKoAl1S8OKQoWlHDAlZYCw7mjNU7t7V4EFQ4": {
+    "HelloUnderscorerajammaLambdaVersionLe92OJvrEKu4XQRR4WE93DY567E5rD3FPsaDwA3VU": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
-          "Ref": "HelloDashlongDashtimeoutLambdaFunction"
+          "Ref": "HelloUnderscorerajammaLambdaFunction"
         },
-        "CodeSha256": "4oByfhhi96kdg2YcVuOVnxDjFnYqXQnaplHDHagzOt4="
+        "CodeSha256": "ZknKFQ6EsuY8f5LCPqqTfKynN/EUi4OB/ZXHLkMeGMg="
       }
     },
-    "CWLSubFilterHelloDashshortDashtimeoutLogGroupUsEast1": {
+    "CWLSubFilterHelloUnderscoresravanLogGroupUsEast1": {
       "Type": "AWS::Logs::SubscriptionFilter",
       "Properties": {
-        "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:70f84807-240f-4dab-af77-99b7208ec75a#BzH95JztdkcCXT6yyB#hello-world-python#dev",
+        "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:70f84807-240f-4dab-af77-99b7208ec75a#BzH95JztdkcCXT6yyB#python-example-iam#dev",
         "FilterPattern": "?\"REPORT RequestId: \" ?\"SERVERLESS_ENTERPRISE\"",
         "LogGroupName": {
-          "Ref": "HelloDashshortDashtimeoutLogGroup"
+          "Ref": "HelloUnderscoresravanLogGroup"
         }
       }
     },
-    "CWLSubFilterHelloDashlongDashtimeoutLogGroupUsEast1": {
+    "CWLSubFilterHelloUnderscorerajammaLogGroupUsEast1": {
       "Type": "AWS::Logs::SubscriptionFilter",
       "Properties": {
-        "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:70f84807-240f-4dab-af77-99b7208ec75a#BzH95JztdkcCXT6yyB#hello-world-python#dev",
+        "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:70f84807-240f-4dab-af77-99b7208ec75a#BzH95JztdkcCXT6yyB#python-example-iam#dev",
         "FilterPattern": "?\"REPORT RequestId: \" ?\"SERVERLESS_ENTERPRISE\"",
         "LogGroupName": {
-          "Ref": "HelloDashlongDashtimeoutLogGroup"
+          "Ref": "HelloUnderscorerajammaLogGroup"
         }
       }
     }
@@ -309,7 +346,7 @@
         "Ref": "ServerlessDeploymentBucket"
       },
       "Export": {
-        "Name": "sls-hello-world-python-dev-ServerlessDeploymentBucketName"
+        "Name": "sls-python-example-iam-dev-ServerlessDeploymentBucketName"
       }
     },
     "EnterpriseLogAccessIamRole": {
@@ -320,25 +357,25 @@
         ]
       },
       "Export": {
-        "Name": "sls-hello-world-python-dev-EnterpriseLogAccessIamRole"
+        "Name": "sls-python-example-iam-dev-EnterpriseLogAccessIamRole"
       }
     },
-    "HelloDashshortDashtimeoutLambdaFunctionQualifiedArn": {
+    "HelloUnderscoresravanLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HelloDashshortDashtimeoutLambdaVersionyxSEcLpf0Q88EglsFsQWQYZnvJ0IV1AkNRUSfixQKA"
+        "Ref": "HelloUnderscoresravanLambdaVersioneQKQZPzCpo367B368x0aPmPhS9P5scDaPX0Wxrm6HU"
       },
       "Export": {
-        "Name": "sls-hello-world-python-dev-HelloDashshortDashtimeoutLambdaFunctionQualifiedArn"
+        "Name": "sls-python-example-iam-dev-HelloUnderscoresravanLambdaFunctionQualifiedArn"
       }
     },
-    "HelloDashlongDashtimeoutLambdaFunctionQualifiedArn": {
+    "HelloUnderscorerajammaLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HelloDashlongDashtimeoutLambdaVersionUDnDtKKoAl1S8OKQoWlHDAlZYCw7mjNU7t7V4EFQ4"
+        "Ref": "HelloUnderscorerajammaLambdaVersionLe92OJvrEKu4XQRR4WE93DY567E5rD3FPsaDwA3VU"
       },
       "Export": {
-        "Name": "sls-hello-world-python-dev-HelloDashlongDashtimeoutLambdaFunctionQualifiedArn"
+        "Name": "sls-python-example-iam-dev-HelloUnderscorerajammaLambdaFunctionQualifiedArn"
       }
     }
   }
